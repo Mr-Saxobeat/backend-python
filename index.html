@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Pessoas</title>
+
+    <style>
+        .container {
+            margin: auto;
+            width: 500px;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        table, th, td {
+            margin: 0;
+            border: 1px solid black;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #96afe0;
+        }
+
+        @media(max-width: 768px) {
+            .container {
+                margin: 0;
+                align-content: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form action="http://127.0.0.1:8080/pessoas/apagar/" method="POST">
+            <table id="tabela">
+                <tr>
+                    <th>Nome</th>
+                    <th>Data de Admissão</th>
+                    <th>Excluir</th>
+                </tr>
+            </table>
+        </form>
+        <br>
+        <form class="form-add" action="http://127.0.0.1:8080/pessoas/adicionar/" method="POST">
+            <label for="input_nome">Nome:</label><br>
+            <input type="text" name="nome" id="input_nome" required><br>
+    
+            <label for="input_data_admissao">Data de Admissão:</label><br>
+            <!-- <input type="text" name="data_admissao" id="input_data_admissao"required><br> -->
+            <input type="date" name="data_admissao" id="input_data_admissao" required pattern="[0-9]{4}/[0-9]{2}/[0-9]{2}"><br>
+            <button type="submit">Adicionar</button>
+        </form>
+    </div>
+    
+    <script>
+        function addPessoa(pessoa){
+            var linha = tabela.insertRow()
+            var celNome = linha.insertCell(0);
+            var celAdmissao = linha.insertCell(1);
+            var celBotao = linha.insertCell(2);
+
+            celNome.innerHTML = pessoa["nome"].split(" ")[0];
+            celAdmissao.innerHTML = pessoa["data_admissao"];
+
+            var botao = document.createElement("button");
+            botao.setAttribute("type", "submit");
+            botao.setAttribute("value", pessoa["id"]);
+            botao.setAttribute("name", "id_pessoa");
+            botao.innerHTML = "Excluir";
+            celBotao.appendChild(botao);
+        }
+
+        function httpGet(theUrl){
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", theUrl, false );
+            xmlHttp.send( null );
+            return xmlHttp.responseText;
+        }
+
+        var pessoas = JSON.parse(httpGet("http://127.0.0.1:8080/pessoas/"));
+        var tabela = document.getElementById("tabela");
+
+        pessoas.forEach(pessoa => {
+            addPessoa(pessoa);
+        });
+    </script>
+</body>
+</html>
