@@ -73,7 +73,9 @@ class Serv(BaseHTTPRequestHandler):
                 "INSERT INTO pessoas(nome,data_admissao) VALUES('" + nome + 
                 "',STR_TO_DATE('" + data + "', '%Y-%m-%d'))")
 
-        # Ao final do POST, redireciona para a página incial.
+        # Ao final do POST, faz o commit no banco 
+        # e redireciona para a página incial.
+        self.mydb.commit()
         self.path = '/'
         self.do_GET()
 
